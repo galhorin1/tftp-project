@@ -1,4 +1,4 @@
-import pathlib
+import ipaddress
 import socket
 import os
 
@@ -74,6 +74,15 @@ def receive_file(filename, port1):
 # Create a UDP socket at client side
 UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 # what does the user want to do receive file or send one ?
+valid = False
+while not valid:
+    serverIP = input("please enter server ip\n")
+    try:
+        ip = ipaddress.ip_address(serverIP)
+        valid = True
+    except ValueError:
+        print("not a valid ip address")
+serverAddressPort = (serverIP, 69)
 print("Press 1 to send file to the server,press 2 to receive file from the server")
 requestType = input("press anything else to quit : \n")
 if requestType == '1':
