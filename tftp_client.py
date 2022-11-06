@@ -1,3 +1,4 @@
+import pathlib
 import socket
 import os
 
@@ -39,6 +40,7 @@ def sending_file(filename, port1):
         print("file does not exists ")
         data = "error file does not exist".encode('ascii')
         sendSocket.sendto(data, address)
+    sendSocket.close()
 
 
 # func to receive file from the server
@@ -64,6 +66,7 @@ def receive_file(filename, port1):
             data = recSocket.recvfrom(bufferSize)
             info = format(data[0].decode('ascii'))
         file1.close()
+    recSocket.close()
     print('finished')
     exit(0)
 
@@ -104,6 +107,7 @@ elif requestType == '2':
         receive_file(fileNameRec, port)
     else:
         print("failed to connect to the server please try again later")
+        UDPClientSocket.close()
         exit(0)
 else:
     print("system will now exit")

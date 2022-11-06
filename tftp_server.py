@@ -36,7 +36,6 @@ def send_file(port):
     receive = serverSocket.recvfrom(bufferSize)
     filename1 = receive[0].decode('ascii')
     address1 = receive[1]
-    print("in sending func")
     filepath = filesDir + sep + filename1
     # check if the file exist
     if os.path.exists(filepath) and os.path.isfile(filepath):
@@ -59,6 +58,7 @@ def send_file(port):
         data = "error file does not exist".encode('ascii')
         serverSocket.sendto(data, address1)
     portsStack.append(port)
+    serverSocket.close()
     print('finished and waiting next client')
 
 
@@ -66,7 +66,6 @@ def send_file(port):
 def receive_file(port):
     serverSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
     serverSocket.bind((serverIP, port))
-    print("in receiving func")
     replay = serverSocket.recvfrom(bufferSize)
     filename = replay[0].decode('ascii')
     serverSocket.sendto("ok".encode('ascii'), address)
@@ -87,12 +86,13 @@ def receive_file(port):
             address1 = replay[1]
         file1.close()
     portsStack.append(port)
+    serverSocket.close()
     print('finished and waiting next client')
 
 
 ports_reset()
 
-# server will be up and listening for clients always
+# server will be up and listening for clients always filtering the requests to threads
 while True:
     # UDP server at port get message from the client with what the client wants to do
     bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
@@ -118,5 +118,5 @@ while True:
         t.run()
     else:
         bytesToSend = "failed".encode('ascii')
-    # Sending a reply to client
-    UDPServerSocket.sendto(bytesToSend, address)
+        # Sending a reply to client
+        UDPServerSocket.sendto(bytesToSend, address)
